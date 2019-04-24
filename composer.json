@@ -3,7 +3,7 @@
   "description": "Depot for application loggers, making loggers available on demand",
   "minimum-stability": "stable",
   "type": "library",
-  "license": "LGPLv3",
+  "license": "GPL-3.0-or-later",
   "keywords": [
     "log",
     "logger",
@@ -13,7 +13,7 @@
   "authors": [
     {
       "name": "Kjell-Inge Gustafsson",
-      "homepage": "https://kigkonsult.se/loggerdepot/index.php"
+      "email": "ical@kigkonsult.se"
     }
   ],
   "support": {
@@ -23,6 +23,9 @@
   "autoload": {
     "files": [ "autoload.php" ],
     "psr-4": { "Kigkonsult\\LoggerDepot\\": "src/" }
+  },
+  "require": {
+    "php": ">=5.6"
   },
   "require-dev": {
     "phpunit/phpunit": "^6.1.0",
