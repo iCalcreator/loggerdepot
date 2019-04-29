@@ -3,7 +3,7 @@
   "description": "Depot for application loggers, making loggers available on demand",
   "minimum-stability": "stable",
   "type": "library",
-  "license": "GPL-3.0-or-later",
+  "license": "LGPL-3.0-or-later",
   "keywords": [
     "log",
     "logger",
