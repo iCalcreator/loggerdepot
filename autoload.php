@@ -5,7 +5,7 @@
  * Copyright (c) 2019 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
  * Link      https://kigkonsult.se
  * Package   loggerDepot
- * Version   1.0
+ * Version   1.02
  * License   Subject matter of licence is the software loggerDepot.
  *           The above copyright, link, package and version notices and
  *           this licence notice shall be included in all copies or
@@ -33,11 +33,11 @@ spl_autoload_register(
     function( $class ) {
         static $PREFIX = 'Kigkonsult\\LoggerDepot\\';
         static $BS     = '\\';
-        static $FMT    = '%1$s%2$s%3$s.php';
+        static $FMT    = '%1$s%2$ssrc%2$s%3$s.php';
         if ( 0 != strncmp( $PREFIX, $class, 23 )) {
             return;
         }
-        $class = substr( $class, 23 );
+        $class = substr( $class, 24 );
         if ( false !== strpos( $class, $BS )) {
             $class = str_replace( $BS, DIRECTORY_SEPARATOR, $class );
         }

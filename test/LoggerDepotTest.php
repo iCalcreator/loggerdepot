@@ -5,7 +5,7 @@
  * Copyright (c) 2019 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
  * Link      https://kigkonsult.se
  * Package   loggerDepot
- * Version   1.0
+ * Version   1.02
  * License   Subject matter of licence is the software loggerDepot.
  *           The above copyright, link, package and version notices and
  *           this licence notice shall be included in all copies or
@@ -99,7 +99,7 @@ class LoggerDepotTest extends TestCase
     ) {
         foreach( $loggerCfg as $k => $l ) {
             $this->assertFalse( LoggerDepot::isLoggerSet( $k ));
-            $this->assertNull( LoggerDepot::getLogger( $k ));
+            $this->assertNotNull( LoggerDepot::getLogger( $k )); // NullLogger is set
             $this->assertFalse( LoggerDepot::setFallbackLoggerKey( $k ));
 
             LoggerDepot::registerLogger( $k, $l );
@@ -113,10 +113,7 @@ class LoggerDepotTest extends TestCase
 
             LoggerDepot::unregisterLogger( $k );
             $this->assertFalse( LoggerDepot::isLoggerSet( $k ));
-            $this->assertNull( LoggerDepot::getLogger( $k ));
-
-            LoggerDepot::unregisterLogger( $k );
-            $this->assertFalse( LoggerDepot::isLoggerSet( $k ));
+            $this->assertNotNull( LoggerDepot::getLogger( $k )); // NullLogger is set
         }
 
     }
@@ -316,13 +313,25 @@ class LoggerDepotTest extends TestCase
             LogLevel::DEBUG,
             get_class( $NullLogger )
         ];
-        
-        $data[] = [ // test data set #0
+
+        $data[] = [ // test data set #1
             $loggers,
             LogLevel::ERROR,
             get_class( $TestLogger )
         ];
-        
+
+        $data[] = [ // test data set #2
+            [],
+            LogLevel::DEBUG,
+            get_class( $NullLogger )
+        ];
+
+        $data[] = [ // test data set #3
+            [],
+            LogLevel::ERROR,
+            get_class( $NullLogger )
+        ];
+
         return $data;
     }
 

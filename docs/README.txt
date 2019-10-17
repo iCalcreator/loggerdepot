@@ -16,6 +16,7 @@ You may also use different keys for the same logger as well as set a logger as
 a fallback logger.
 
 Invoking of a logger is as easy as `LoggerDepot::getLogger( <key> )`.
+A NullLogger is return is no logger is set.
 
 The construction makes it possible to supervise loggers for separate parts
 (functions, modules, components etc) of your software.
@@ -25,176 +26,207 @@ USAGE
 
 With <logger> (below) means any PHP logger and corresponding config.
 
-## Set up a (string) keyed logger:
+- logger set up
+
+~~~~~~
+<?php
+namespace Kigkonsult\Example;
+use Kigkonsult\LoggerDepot\LoggerDepot;
+
+LoggerDepot::registerLogger(
+    __NAMESPACE__, // key
+    new <logger>( <logConfig> )
+);
+~~~~~~
+
+- usage in class
+
+~~~~~~
+<?php
+namespace Kigkonsult\Example;
+use Kigkonsult\LoggerDepot\LoggerDepot;
+
+class LoggerUserClass1
+{
+    private $logger = null;
+
+    public function __construct() {
+        $this->logger = LoggerDepot::getLogger( __CLASS__ );
+        $this->logger->debug( 'Start ' . __CLASS__ );
+    }
+
+    public function aMethod( $argument ) {
+        $this->logger->debug( 'Start ' . __METHOD__ );
+        $this->logger->info( 'aMethod argument IN : ' . $argument );
+    }
+}
+
+class LoggerUserClass2
+{
+    public static function bMethod( $argument ) {
+        LoggerDepot::getLogger( __CLASS__ )->debug( 'Start ' . __METHOD__ );
+    }
+}
+~~~~~~
+
+###### Register loggers
+
+- Set up a (string) keyed logger:
 
 ~~~~~~
 <?php
 use Kigkonsult\LoggerDepot\LoggerDepot;
 
-LoggerDepot::registerLogger( <key>, new <logger>( $logConfig ));
-
+LoggerDepot::registerLogger( <key>, new <logger>( <logConfig> ));
 ~~~~~~
+
 Note, register using the same key again will replace existing logger.
 
-## Or check first if logger is set:
+- Or check first if logger is set:
+
 ~~~~~~
 <?php
 use Kigkonsult\LoggerDepot\LoggerDepot;
 
 if( ! LoggerDepot::isLoggerSet( <key> )) {
-    LoggerDepot::registerLogger( <key>, new <logger>( $logConfig ));
+    LoggerDepot::registerLogger( <key>, new <logger>( <logConfig> ));
 }
-
 ~~~~~~
 
-## Get a (string) keyed logger, on demand:
+###### getLogger usage 1
+
+- Get a (string) keyed logger, on demand:
 
 ~~~~~~
 <?php
 use Kigkonsult\LoggerDepot\LoggerDepot;
 
 $logger = LoggerDepot::getLogger( <key> );
-
 ~~~~~~
 
-## or a one-liner (ex. for a Psr\Log logger):
+- or a one-liner (ex. for a Psr\Log logger):
 
 ~~~~~~
 <?php
 use Kigkonsult\LoggerDepot\LoggerDepot;
 
 LoggerDepot::getLogger( <key> )->error( 'Error message' );
-
 ~~~~~~
+
+###### getLogger usage 2
+
 The search of requested logger is performed in logger (set-)order.
 
+- Set up a 'namespace' logger in top of a 'namespace' tree:
 
-## Set up a 'namespace' logger in top of a 'namespace' tree:
+~~~~~~
+<?php
+namespace Kigkonsult\Example;
+use Kigkonsult\LoggerDepot\LoggerDepot;
+
+LoggerDepot::registerLogger( __NAMESPACE__, new <logger>( <logConfig> ));
+~~~~~~
+
+- Get a 'namespace' logger in a class in the same/sub-level 'namespace' tree:
+
+~~~~~~
+<?php
+namespace Kigkonsult\Example\Impl;
+use Kigkonsult\LoggerDepot\LoggerDepot;
+
+class LoggerUserClass3
+{
+    public function aMethod( $argument ) {
+        $logger = LoggerDepot::getLogger( get_class());
+        ...
+        $logger->info( 'aMethod argument IN : ' . $argument );
+    }
+}
+~~~~~~
+
+- or a one-liner (ex. for a Psr\Log logger):
+
+~~~~~~
+<?php
+namespace Kigkonsult\Example\Impl;
+use Kigkonsult\LoggerDepot\LoggerDepot;
+
+class LoggerUserClass4
+{
+    public function aMethod( $argument ) {
+        LoggerDepot::getLogger( get_class())->error( 'Error message' );
+    }
+}
+~~~~~~
+
+###### fallback
+
+- Set up a fallback logger to use in case requested logger is not found:
 
 ~~~~~~
 <?php
 use Kigkonsult\LoggerDepot\LoggerDepot;
 
-LoggerDepot::registerLogger( __NAMESPACE__, new <logger>( $logConfig ));
-
-~~~~~~
-
-## Get a 'namespace' logger in a class in the same/sub-level 'namespace' tree:
-
-~~~~~~
-<?php
-use Kigkonsult\LoggerDepot\LoggerDepot;
-
-$logger = LoggerDepot::getLogger( get_class());
-
-~~~~~~
-
-## or a one-liner (ex. for a Psr\Log logger):
-
-~~~~~~
-<?php
-use Kigkonsult\LoggerDepot\LoggerDepot;
-
-LoggerDepot::getLogger( get_class())->error( 'Error message' );
-
-~~~~~~
-
-## A good way to avoid littering your code with `if( true == $debug ) { }`,
-
-- set upp a real logger in development enviroment
-
-~~~~~~
-<?php
-use Kigkonsult\LoggerDepot\LoggerDepot;
-use Psr\Log\LogLevel;
-
-LoggerDepot::registerLogger(
-    LogLevel::DEBUG, // key, not log prio
-    new <logger>( $logConfig )
-);
-
-~~~~~~
-
-- set upp a a NullLogger in production environment (ex. for a Psr\Log NullLogger)
-
-~~~~~~
-<?php
-use Kigkonsult\LoggerDepot\LoggerDepot;
-use Psr\Log\LogLevel;
-use Psr\Log\NullLogger;
-
-LoggerDepot::registerLogger(
-    LogLevel::DEBUG, // key, not log prio
-    new NullLogger()
-);
-
-- and in code
-
-<?php
-use Kigkonsult\LoggerDepot\LoggerDepot;
-use Psr\Log\LogLevel;
-
-LoggerDepot::getLogger( LogLevel::DEBUG )->debug( 'debug message' );
-
-
-## Set up a fallback logger to use in case requested logger is not found:
-
-<?php
-use Kigkonsult\LoggerDepot\LoggerDepot;
-
-LoggerDepot::registerLogger( <key>, new <logger>( $logConfig ));
+LoggerDepot::registerLogger( <key>, new <logger>( <logConfig> ));
 LoggerDepot::setFallbackLoggerKey( <key> );
+~~~~~~
 
+Note, `LoggerDepot::setFallbackLoggerKey()` return `false` if key (for logger) is not set.
 
-Note, setFallbackLoggerKey() return false if key (for logger) is not set.
+- or shorter
 
-## or shorter
-
+~~~~~~
 <?php
 use Kigkonsult\LoggerDepot\LoggerDepot;
 
-LoggerDepot::registerLogger( <key>, new <logger>( $logConfig ), true );
-
+LoggerDepot::registerLogger( <key>, new <logger>( <logConfig> ), true );
+~~~~~~
 
 The first logger is always set as fallback until specific logger is set.
 Hence, a single logger will also serve as fallback.
 
-## Fetch key for the fallback logger:
+- Fetch key for the fallback logger:
 
+~~~~~~
 <?php
 use Kigkonsult\LoggerDepot\LoggerDepot;
 
 $key = LoggerDepot::getFallbackLoggerKey();
+~~~~~~
 
 
-## Fetch (array) all keys for all loggers:
+###### Misc
 
+- Fetch (array) all keys for all loggers:
+
+~~~~~~
 <?php
 use Kigkonsult\LoggerDepot\LoggerDepot;
 
 $keys = LoggerDepot::getLoggerKeys();
+~~~~~~
 
+- Remove a specific logger:
 
-## Remove a specific logger:
-
+~~~~~~
 <?php
 use Kigkonsult\LoggerDepot\LoggerDepot;
 
 LoggerDepot::unregisterLogger( <key> );
+~~~~~~
 
+Caveat, removing the fallback logger will force 'the next' (in order) to take over.
 
-Caveat, removing the fallback logger will force 'the next' (in order)
-to take over.
+- And (in the end?) remove all:
 
-## And (in the end?) remove all:
-
+~~~~~~
 <?php
 use Kigkonsult\LoggerDepot\LoggerDepot;
 
 foreach( LoggerDepot::getLoggerKeys() as $key ) {
     LoggerDepot::unregisterLogger( $key );
 }
-
+~~~~~~
 
 
 INSTALL
@@ -233,7 +265,7 @@ include 'pathToSource/loggerdepot/autoload.php';
 Copyright (c) 2019 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
 Link      https://kigkonsult.se
 Package   LoggerDepot
-Version   1.0
+Version   1.02
 License   Subject matter of licence is the software LoggerDepot.
           The above copyright, link, package and version notices and
           this licence notice shall be included in all copies or

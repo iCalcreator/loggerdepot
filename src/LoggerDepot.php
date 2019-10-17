@@ -5,7 +5,7 @@
  * Copyright (c) 2019 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
  * Link      https://kigkonsult.se
  * Package   loggerDepot
- * Version   1.0
+ * Version   1.02
  * License   Subject matter of licence is the software loggerDepot.
  *           The above copyright, link, package and version notices and
  *           this licence notice shall be included in all copies or
@@ -27,6 +27,8 @@
  * This file is part of loggerDepot.
  */
 namespace Kigkonsult\LoggerDepot;
+
+use Psr\Log\NullLogger;
 
 use function array_keys;
 use function array_map;
@@ -172,7 +174,7 @@ class LoggerDepot
     }
 
     /**
-     * Return logger for (traversed) search key
+     * Return logger for (traversed) search key, NullLogger if no loggers set
      *
      * @param string $key
      * @return mixed object|null
@@ -191,7 +193,7 @@ class LoggerDepot
         if( ! empty( LoggerDepot::$fallbackKey )) {
             return LoggerDepot::$depot[LoggerDepot::$fallbackKey];
         }
-        return null;
+        return new NullLogger();
     }
 
     /**
