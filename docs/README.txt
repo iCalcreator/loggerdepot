@@ -262,10 +262,10 @@ include 'pathToSource/loggerdepot/autoload.php';
 
 
 
-Copyright (c) 2019 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+Copyright (c) 2019-2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
 Link      https://kigkonsult.se
 Package   LoggerDepot
-Version   1.02
+Version   1.03
 License   Subject matter of licence is the software LoggerDepot.
           The above copyright, link, package and version notices and
           this licence notice shall be included in all copies or

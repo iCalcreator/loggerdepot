@@ -2,10 +2,10 @@
 /**
  * LoggerDepot is a depot for PHP application/software loggers, making loggers available on demand.
  *
- * Copyright (c) 2019 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * Copyright (c) 2019-2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
  * Link      https://kigkonsult.se
  * Package   loggerDepot
- * Version   1.02
+ * Version   1.03
  * License   Subject matter of licence is the software loggerDepot.
  *           The above copyright, link, package and version notices and
  *           this licence notice shall be included in all copies or
@@ -76,7 +76,7 @@ class LoggerDepotTest extends TestCase
     public function LoggerDepotData1Provider()
     {
         $data   = [];
-        
+
         $data[] = [ // test data set #0
             [
                 'key1'  => new TestLogger( 'logger 11 key1' ),

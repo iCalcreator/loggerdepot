@@ -2,10 +2,10 @@
 /**
  * loggerDepot is a depot for PHP application/software loggers, making loggers available on demand.
  *
- * Copyright (c) 2019 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * Copyright (c) 2019-2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
  * Link      https://kigkonsult.se
  * Package   loggerDepot
- * Version   1.02
+ * Version   1.03
  * License   Subject matter of licence is the software loggerDepot.
  *           The above copyright, link, package and version notices and
  *           this licence notice shall be included in all copies or
@@ -37,7 +37,7 @@ spl_autoload_register(
         if ( 0 != strncmp( $PREFIX, $class, 23 )) {
             return;
         }
-        $class = substr( $class, 24 );
+        $class = substr( $class, 23 );
         if ( false !== strpos( $class, $BS )) {
             $class = str_replace( $BS, DIRECTORY_SEPARATOR, $class );
         }
