@@ -1,34 +1,41 @@
 {
-  "name": "kigkonsult/loggerdepot",
-  "description": "Depot for application loggers, making loggers available on demand",
-  "minimum-stability": "stable",
-  "type": "library",
-  "license": "LGPL-3.0-or-later",
-  "keywords": [
-    "log",
-    "logger",
-    "depot"
-  ],
-  "homepage": "https://kigkonsult.se",
-  "authors": [
-    {
-      "name": "Kjell-Inge Gustafsson",
-      "email": "ical@kigkonsult.se"
+    "name": "kigkonsult/loggerdepot",
+    "description": "Depot for application loggers, making loggers available on demand",
+    "minimum-stability": "stable",
+    "type": "library",
+    "license": "LGPL-3.0-or-later",
+    "keywords": [
+        "log",
+        "logger",
+        "depot"
+    ],
+    "homepage": "https://kigkonsult.se",
+    "authors": [
+        {
+            "name": "Kjell-Inge Gustafsson",
+            "email": "ical@kigkonsult.se"
+        }
+    ],
+    "funding": [
+        {
+            "type": "other",
+            "url": "https://paypal.me/kigkonsult"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/iCalcreator/loggerdepot/issues",
+        "source": "https://github.com/iCalcreator/loggerdepot"
+    },
+    "autoload": {
+        "files": [ "autoload.php" ],
+        "psr-4": { "Kigkonsult\\LoggerDepot\\": "src/" }
+    },
+    "require": {
+        "php": ">=5.6"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.1.0",
+        "psr/log": "1.0.2"
     }
-  ],
-  "support": {
-    "issues": "https://github.com/iCalcreator/loggerdepot/issues",
-    "source": "https://github.com/iCalcreator/loggerdepot"
-  },
-  "autoload": {
-    "files": [ "autoload.php" ],
-    "psr-4": { "Kigkonsult\\LoggerDepot\\": "src/" }
-  },
-  "require": {
-    "php": ">=5.6"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "^6.1.0",
-    "psr/log": "1.0.2"
-  }
 }
+
