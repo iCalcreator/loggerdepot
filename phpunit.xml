@@ -2,29 +2,28 @@
 <!--
  LoggerDepot is a depot for PHP application/software loggers, making loggers available on demand.
 
- Copyright (c) 2019-2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- Link      https://kigkonsult.se
- Package   LoggerDepot
- Version   1.03
- License   Subject matter of licence is the software LoggerDepot.
-           The above copyright, link, package and version notices and
-           this licence notice shall be included in all copies or
-           substantial portions of the LoggerDepot.
+ This file is part of LoggerDepot.
 
-           LoggerDepot is free software: you can redistribute it and/or modify
-           it under the terms of the GNU Lesser General Public License as published
-           by the Free Software Foundation, either version 3 of the License,
-           or (at your option) any later version.
+ author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ copyright 2019-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ link      https://kigkonsult.se
+ license   Subject matter of licence is the software loggerDepot.
+           The above copyright, link, package and version notices,
+           this licence notice shall be included in all copies or substantial
+           portions of the loggerDepot.
 
-           LoggerDepot is distributed in the hope that it will be useful,
+           loggerDepot is free software: you can redistribute it and/or modify
+           it under the terms of the GNU Lesser General Public License as
+           published by the Free Software Foundation, either version 3 of
+           the License, or (at your option) any later version.
+
+           loggerDepot is distributed in the hope that it will be useful,
            but WITHOUT ANY WARRANTY; without even the implied warranty of
            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
            GNU Lesser General Public License for more details.
 
            You should have received a copy of the GNU Lesser General Public License
-           along with LoggerDepot. If not, see <https://www.gnu.org/licenses/>.
-
- This file is part of LoggerDepot.
+           along with loggerDepot. If not, see <https://www.gnu.org/licenses/>.
 -->
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"

@@ -2,30 +2,30 @@
 /**
  * LoggerDepot is a depot for PHP application/software loggers, making loggers available on demand.
  *
- * Copyright (c) 2019-2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link      https://kigkonsult.se
- * Package   loggerDepot
- * Version   1.03
- * License   Subject matter of licence is the software loggerDepot.
- *           The above copyright, link, package and version notices and
- *           this licence notice shall be included in all copies or
- *           substantial portions of the loggerDepot.
- *
- *           loggerDepot is free software: you can redistribute it and/or modify
- *           it under the terms of the GNU Lesser General Public License as published
- *           by the Free Software Foundation, either version 3 of the License,
- *           or (at your option) any later version.
- *
- *           loggerDepot is distributed in the hope that it will be useful,
- *           but WITHOUT ANY WARRANTY; without even the implied warranty of
- *           MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *           GNU Lesser General Public License for more details.
- *
- *           You should have received a copy of the GNU Lesser General Public License
- *           along with loggerDepot. If not, see <https://www.gnu.org/licenses/>.
- *
  * This file is part of loggerDepot.
+ *
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2019-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software loggerDepot.
+ *            The above copyright, link, package and version notices,
+ *            this licence notice shall be included in all copies or substantial
+ *            portions of the loggerDepot.
+ *
+ *            loggerDepot is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU Lesser General Public License as
+ *            published by the Free Software Foundation, either version 3 of
+ *            the License, or (at your option) any later version.
+ *
+ *            loggerDepot is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *            GNU Lesser General Public License for more details.
+ *
+ *            You should have received a copy of the GNU Lesser General Public License
+ *            along with loggerDepot. If not, see <https://www.gnu.org/licenses/>.
  */
+declare( strict_types = 1 );
 namespace Kigkonsult\LoggerDepot;
 
 use Psr\Log\NullLogger;
@@ -51,7 +51,7 @@ class LoggerDepot
     private static $depot    = [];
 
     /**
-     * @var string  Key for fallback logger
+     * @var null|string  Key for fallback logger
      * @access private
      * @static
      */
@@ -72,7 +72,8 @@ class LoggerDepot
      * @access private
      * @static
      */
-    private static function marshallKey( $key ) {
+    private static function marshallKey( string $key ) : string
+    {
         return serialize( rtrim( $key, LoggerDepot::$BS ));
     }
 
@@ -83,7 +84,8 @@ class LoggerDepot
      * @return bool
      * @static
      */
-    public static function setFallbackLoggerKey( $key ) {
+    public static function setFallbackLoggerKey( string $key ) : bool
+    {
         if( LoggerDepot::isLoggerSet( $key )) {
             LoggerDepot::$fallbackKey = LoggerDepot::marshallKey( $key );
             return true;
@@ -97,7 +99,7 @@ class LoggerDepot
      * @return string
      * @static
      */
-     public static function getFallbackLoggerKey()
+     public static function getFallbackLoggerKey() : string
      {
          return unserialize( LoggerDepot::$fallbackKey  );
      }
@@ -112,7 +114,8 @@ class LoggerDepot
      * @param bool   $isFallback
      * @static
      */
-    public static function registerLogger( $key, $logger, $isFallback = false ) {
+    public static function registerLogger( string $key, $logger, $isFallback = false )
+    {
         $mKey = LoggerDepot::marshallKey( $key );
         LoggerDepot::$depot[$mKey] = $logger;
         if( empty( LoggerDepot::$fallbackKey ) || $isFallback ) {
@@ -126,7 +129,8 @@ class LoggerDepot
      * @param string $key
      * @static
      */
-    public static function unregisterLogger( $key ) {
+    public static function unregisterLogger( string $key )
+    {
         $mKey = LoggerDepot::marshallKey( $key );
         if( ! isset( LoggerDepot::$depot[$mKey] )) {
             return;
@@ -157,8 +161,12 @@ class LoggerDepot
      * @return array
      * @static
      */
-    public static function getLoggerKeys() {
-        return array_map( function( $k ) { return unserialize( $k ); }, array_keys( LoggerDepot::$depot ));
+    public static function getLoggerKeys() : array
+    {
+        return array_map(
+            function( $k ) { return unserialize( $k ); },
+            array_keys( LoggerDepot::$depot )
+        );
     }
 
     /**
@@ -168,7 +176,8 @@ class LoggerDepot
      * @return bool
      * @static
      */
-    public static function isLoggerSet( $key ) {
+    public static function isLoggerSet( string $key ) : bool
+    {
         $mKey = LoggerDepot::marshallKey( $key );
         return isset( LoggerDepot::$depot[$mKey] );
     }
@@ -180,7 +189,8 @@ class LoggerDepot
      * @return mixed object|null
      * @static
      */
-    public static function getLogger( $key ) {
+    public static function getLogger( string $key )
+    {
         $mKey = LoggerDepot::marshallKey( $key );
         if( isset( LoggerDepot::$depot[$mKey] )) {
             return LoggerDepot::$depot[$mKey];
@@ -200,23 +210,22 @@ class LoggerDepot
      * Return logger key for (traversed) search key
      *
      * @param string $key
-     * @return string|bool
+     * @return string|bool   bool false on error
      * @access private
      * @static
      */
-    private static function traverseKey( $key ) {
+    private static function traverseKey( string $key )
+    {
         $keyChain = explode( LoggerDepot::$BS, rtrim( $key, LoggerDepot::$BS ));
         $x        = count( $keyChain ) - 1;
         do {
             $sKey = implode( LoggerDepot::$BS, $keyChain );
             if( LoggerDepot::isLoggerSet( $sKey )) {
                 return $sKey;
-                break;
             }
             unset( $keyChain[$x] );
             $x -= 1;
         } while( $x >= 0 );
         return false;
     }
-
 }

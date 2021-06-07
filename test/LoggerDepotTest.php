@@ -2,31 +2,30 @@
 /**
  * LoggerDepot is a depot for PHP application/software loggers, making loggers available on demand.
  *
- * Copyright (c) 2019-2020 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
- * Link      https://kigkonsult.se
- * Package   loggerDepot
- * Version   1.03
- * License   Subject matter of licence is the software loggerDepot.
- *           The above copyright, link, package and version notices and
- *           this licence notice shall be included in all copies or
- *           substantial portions of the loggerDepot.
- *
- *           loggerDepot is free software: you can redistribute it and/or modify
- *           it under the terms of the GNU Lesser General Public License as published
- *           by the Free Software Foundation, either version 3 of the License,
- *           or (at your option) any later version.
- *
- *           loggerDepot is distributed in the hope that it will be useful,
- *           but WITHOUT ANY WARRANTY; without even the implied warranty of
- *           MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *           GNU Lesser General Public License for more details.
- *
- *           You should have received a copy of the GNU Lesser General Public License
- *           along with loggerDepot. If not, see <https://www.gnu.org/licenses/>.
- *
  * This file is part of loggerDepot.
+ *
+ * @author    Kjell-Inge Gustafsson, kigkonsult <ical@kigkonsult.se>
+ * @copyright 2019-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+ * @link      https://kigkonsult.se
+ * @license   Subject matter of licence is the software loggerDepot.
+ *            The above copyright, link, package and version notices,
+ *            this licence notice shall be included in all copies or substantial
+ *            portions of the loggerDepot.
+ *
+ *            loggerDepot is free software: you can redistribute it and/or modify
+ *            it under the terms of the GNU Lesser General Public License as
+ *            published by the Free Software Foundation, either version 3 of
+ *            the License, or (at your option) any later version.
+ *
+ *            loggerDepot is distributed in the hope that it will be useful,
+ *            but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *            GNU Lesser General Public License for more details.
+ *
+ *            You should have received a copy of the GNU Lesser General Public License
+ *            along with loggerDepot. If not, see <https://www.gnu.org/licenses/>.
  */
-
+declare( strict_types = 1 );
 namespace Kigkonsult\LoggerDepot;
 
 use PHPUnit\Framework\TestCase;
@@ -42,6 +41,8 @@ class TestLogger extends NullLogger
 
     /**
      * Class contructor
+     *
+     * @param string $message
      */
     public function __construct(
         $message = ''
@@ -166,8 +167,8 @@ class LoggerDepotTest extends TestCase
      */
     public function testLoggerDepot2(
         array $loggerCfg,
-        $expected,
-        $class
+        string $expected,
+        string $class
     ) {
         $k = null;
         foreach( $loggerCfg as $k => $l ) {
@@ -215,9 +216,9 @@ class LoggerDepotTest extends TestCase
      */
     public function testLoggerDepot3(
         array $loggerCfg,
-        $expected1,
-        $expected2,
-        $class
+        string $expected1,
+        string $expected2,
+        string $class
     ) {
         $k = $k1 = null;
         foreach( $loggerCfg as $k => $l ) {
@@ -284,9 +285,9 @@ class LoggerDepotTest extends TestCase
      * @param string $expected
      */
     public function testLoggerDepot4(
-        array $loggerCfg,
-              $key,
-              $expected
+        array  $loggerCfg,
+        string $key,
+        string $expected
     ) {
         foreach( $loggerCfg as $k => $l ) {
             LoggerDepot::registerLogger( $k, $l );
@@ -345,9 +346,9 @@ class LoggerDepotTest extends TestCase
      * @param string $expected
      */
     public function testLoggerDepot5(
-        array $loggerCfg,
-              $key,
-              $expected
+        array  $loggerCfg,
+        string $key,
+        string $expected
     ) {
         foreach( $loggerCfg as $k => $l ) {
             LoggerDepot::registerLogger( $k, $l );
