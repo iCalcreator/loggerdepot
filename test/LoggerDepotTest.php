@@ -31,13 +31,14 @@ namespace Kigkonsult\LoggerDepot;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
+use Kigkonsult\LoggerDepot\LoggerDepot;
 
 class TestLogger extends NullLogger
 {
     /**
      * @var string
      */
-    private $message = '';
+    private string $message;
 
     /**
      * Class contructor
@@ -45,7 +46,7 @@ class TestLogger extends NullLogger
      * @param string $message
      */
     public function __construct(
-        $message = ''
+        string $message = ''
     ) {
         $this->message = $message;
     }
@@ -65,16 +66,20 @@ class TestLogger extends NullLogger
  */
 class LoggerDepotTest extends TestCase
 {
-    protected function tearDown() {
+    /**
+     *
+     */
+    protected function tearDown() : void
+    {
         foreach( LoggerDepot::getLoggerKeys() as $key ) {
             LoggerDepot::unregisterLogger( $key );
         }
     }
 
     /**
-     * LoggerDepotData1Provider
+     * loggerDepoTest1 Provider
      */
-    public function LoggerDepotData1Provider()
+    public function loggerDepoTest1Provider() : array
     {
         $data   = [];
 
@@ -92,12 +97,13 @@ class LoggerDepotTest extends TestCase
      * Test common methods
      *
      * @test
-     * @dataProvider LoggerDepotData1Provider
+     * @dataProvider loggerDepoTest1Provider
      * @param array $loggerCfg
      */
-    public function testLoggerDepot1(
+    public function loggerDepoTest1(
         array $loggerCfg
-    ) {
+    ) : void
+    {
         foreach( $loggerCfg as $k => $l ) {
             $this->assertFalse( LoggerDepot::isLoggerSet( $k ));
             $this->assertNotNull( LoggerDepot::getLogger( $k )); // NullLogger is set
@@ -120,9 +126,9 @@ class LoggerDepotTest extends TestCase
     }
 
     /**
-     * LoggerDepotData2Provider
+     * loggerDepotTest2 Provider
      */
-    public function LoggerDepotData2Provider()
+    public function loggerDepotTest2Provider() : array
     {
         $loggers = [
             'Foo'           => new TestLogger( 'Foo namespace logger' ),
@@ -160,17 +166,17 @@ class LoggerDepotTest extends TestCase
      * Test name search
      *
      * @test
-     * @dataProvider LoggerDepotData2Provider
+     * @dataProvider loggerDepotTest2Provider
      * @param array  $loggerCfg,
      * @param string $expected
      * @param string $class
      */
-    public function testLoggerDepot2(
+    public function loggerDepotTest2(
         array $loggerCfg,
         string $expected,
         string $class
-    ) {
-        $k = null;
+    ) : void
+    {
         foreach( $loggerCfg as $k => $l ) {
             LoggerDepot::registerLogger( $k, $l );
         }
@@ -179,9 +185,9 @@ class LoggerDepotTest extends TestCase
     }
 
     /**
-     * LoggerDepotData3Provider
+     * loggerDepotTest3 Provider
      */
-    public function LoggerDepotData3Provider()
+    public function loggerDepotTest3Provider() : array
     {
         $loggers = [
             'Foo'           => new TestLogger( 'Foo namespace logger' ),
@@ -208,18 +214,19 @@ class LoggerDepotTest extends TestCase
      * Test search and get fallback
      *
      * @test
-     * @dataProvider LoggerDepotData3Provider
+     * @dataProvider loggerDepotTest3Provider
      * @param array  $loggerCfg,
      * @param string $expected1
      * @param string $expected2
      * @param string $class
      */
-    public function testLoggerDepot3(
+    public function loggerDepotTest3(
         array $loggerCfg,
         string $expected1,
         string $expected2,
         string $class
-    ) {
+    ) : void
+    {
         $k = $k1 = null;
         foreach( $loggerCfg as $k => $l ) {
             if( empty( $k1 )) {
@@ -238,9 +245,9 @@ class LoggerDepotTest extends TestCase
     }
 
     /**
-     * LoggerDepotData4Provider
+     * loggerDepotTest4 Provider
      */
-    public function LoggerDepotData4Provider()
+    public function loggerDepotTest4Provider() : array
     {
         $data   = [];
         $loggers = [
@@ -256,7 +263,7 @@ class LoggerDepotTest extends TestCase
 
         $data[] = [ // test data set #0
             $loggers,
-            'Kigkonsult\\LoggerDepot\\LoggerDepot',
+            LoggerDepot::class,
             'Kigkonsult namespace logger'
         ];
 
@@ -279,16 +286,17 @@ class LoggerDepotTest extends TestCase
      * Test multiple loggers
      *
      * @test
-     * @dataProvider LoggerDepotData4Provider
+     * @dataProvider loggerDepotTest4Provider
      * @param array $loggerCfg
      * @param string $key
      * @param string $expected
      */
-    public function testLoggerDepot4(
+    public function loggerDepotTest4(
         array  $loggerCfg,
         string $key,
         string $expected
-    ) {
+    ) : void
+    {
         foreach( $loggerCfg as $k => $l ) {
             LoggerDepot::registerLogger( $k, $l );
         }
@@ -296,9 +304,9 @@ class LoggerDepotTest extends TestCase
     }
 
     /**
-     * LoggerDepotData5Provider
+     * loggerDepotTest5 Provider
      */
-    public function LoggerDepotData5Provider()
+    public function loggerDepotTest5Provider() : array
     {
         $NullLogger = new NullLogger();
         $TestLogger = new TestLogger();
@@ -340,16 +348,17 @@ class LoggerDepotTest extends TestCase
      * Test Psr\Log
      *
      * @test
-     * @dataProvider LoggerDepotData5Provider
+     * @dataProvider loggerDepotTest5Provider
      * @param array $loggerCfg
      * @param string $key
      * @param string $expected
      */
-    public function testLoggerDepot5(
+    public function loggerDepotTest5(
         array  $loggerCfg,
         string $key,
         string $expected
-    ) {
+    ) : void
+    {
         foreach( $loggerCfg as $k => $l ) {
             LoggerDepot::registerLogger( $k, $l );
         }

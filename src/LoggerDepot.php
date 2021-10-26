@@ -48,21 +48,21 @@ class LoggerDepot
      * @access private
      * @static
      */
-    private static $depot    = [];
+    private static array $depot    = [];
 
     /**
      * @var null|string  Key for fallback logger
      * @access private
      * @static
      */
-    private static $fallbackKey = null;
+    private static ?string $fallbackKey = null;
 
     /**
      * @var string
      * @access private
      * @static
      */
-    private static $BS = '\\';
+    private static string $BS = '\\';
 
     /**
      * Return marshalled key
@@ -74,7 +74,7 @@ class LoggerDepot
      */
     private static function marshallKey( string $key ) : string
     {
-        return serialize( rtrim( $key, LoggerDepot::$BS ));
+        return serialize( rtrim( $key, self::$BS ));
     }
 
     /**
@@ -86,8 +86,8 @@ class LoggerDepot
      */
     public static function setFallbackLoggerKey( string $key ) : bool
     {
-        if( LoggerDepot::isLoggerSet( $key )) {
-            LoggerDepot::$fallbackKey = LoggerDepot::marshallKey( $key );
+        if( self::isLoggerSet( $key )) {
+            self::$fallbackKey = self::marshallKey( $key );
             return true;
         }
         return false;
@@ -101,7 +101,7 @@ class LoggerDepot
      */
      public static function getFallbackLoggerKey() : string
      {
-         return unserialize( LoggerDepot::$fallbackKey  );
+         return unserialize( self::$fallbackKey  );
      }
 
     /**
@@ -111,15 +111,15 @@ class LoggerDepot
      *
      * @param string $key
      * @param mixed  $logger
-     * @param bool   $isFallback
+     * @param null|bool $isFallback
      * @static
      */
-    public static function registerLogger( string $key, $logger, $isFallback = false )
+    public static function registerLogger( string $key, $logger, ? bool $isFallback = false ) : void
     {
-        $mKey = LoggerDepot::marshallKey( $key );
-        LoggerDepot::$depot[$mKey] = $logger;
-        if( empty( LoggerDepot::$fallbackKey ) || $isFallback ) {
-            LoggerDepot::$fallbackKey = $mKey ;
+        $mKey = self::marshallKey( $key );
+        self::$depot[$mKey] = $logger;
+        if( empty( self::$fallbackKey ) || $isFallback ) {
+            self::$fallbackKey = $mKey ;
         }
     }
 
@@ -129,30 +129,30 @@ class LoggerDepot
      * @param string $key
      * @static
      */
-    public static function unregisterLogger( string $key )
+    public static function unregisterLogger( string $key ) : void
     {
-        $mKey = LoggerDepot::marshallKey( $key );
-        if( ! isset( LoggerDepot::$depot[$mKey] )) {
+        $mKey = self::marshallKey( $key );
+        if( ! isset( self::$depot[$mKey] )) {
             return;
         }
-        $allKeys = array_keys( LoggerDepot::$depot );
+        $allKeys = array_keys( self::$depot );
         switch( true ) {
-            case ( 1 == count( $allKeys )) :
+            case ( 1 === count( $allKeys )) :
                 // remove last ?
-                LoggerDepot::$fallbackKey = null;
+                self::$fallbackKey = null;
                 break;
-            case ( LoggerDepot::$fallbackKey != $mKey ) :
+            case ( self::$fallbackKey !== $mKey ) :
                 // more loggers exists
                 break;
             default :
                 // replace fallback, next found
                 $thisIxs = array_keys( $allKeys, $mKey );
                 $nextIx  = end( $thisIxs ) + 1;
-                $nextKey = ( isset( $allKeys[$nextIx] )) ? $allKeys[$nextIx] : $allKeys[0];
-                LoggerDepot::$fallbackKey = $nextKey;
+                $nextKey = $allKeys[$nextIx] ?? $allKeys[0];
+                self::$fallbackKey = $nextKey;
                 break;
         }
-        unset( LoggerDepot::$depot[$mKey] );
+        unset( self::$depot[$mKey] );
     }
 
     /**
@@ -164,8 +164,8 @@ class LoggerDepot
     public static function getLoggerKeys() : array
     {
         return array_map(
-            function( $k ) { return unserialize( $k ); },
-            array_keys( LoggerDepot::$depot )
+            static function( $k ) { return unserialize( $k ); },
+            array_keys( self::$depot )
         );
     }
 
@@ -178,8 +178,8 @@ class LoggerDepot
      */
     public static function isLoggerSet( string $key ) : bool
     {
-        $mKey = LoggerDepot::marshallKey( $key );
-        return isset( LoggerDepot::$depot[$mKey] );
+        $mKey = self::marshallKey( $key );
+        return isset( self::$depot[$mKey] );
     }
 
     /**
@@ -191,17 +191,17 @@ class LoggerDepot
      */
     public static function getLogger( string $key )
     {
-        $mKey = LoggerDepot::marshallKey( $key );
-        if( isset( LoggerDepot::$depot[$mKey] )) {
-            return LoggerDepot::$depot[$mKey];
+        $mKey = self::marshallKey( $key );
+        if( isset( self::$depot[$mKey] )) {
+            return self::$depot[$mKey];
         }
-        $foundKey = LoggerDepot::traverseKey( $key );
+        $foundKey = self::traverseKey( $key );
         if( false !== $foundKey ) {
-            $mKey = LoggerDepot::marshallKey( $foundKey );
-            return LoggerDepot::$depot[$mKey];
+            $mKey = self::marshallKey( $foundKey );
+            return self::$depot[$mKey];
         }
-        if( ! empty( LoggerDepot::$fallbackKey )) {
-            return LoggerDepot::$depot[LoggerDepot::$fallbackKey];
+        if( ! empty( self::$fallbackKey )) {
+            return self::$depot[self::$fallbackKey];
         }
         return new NullLogger();
     }
@@ -216,15 +216,15 @@ class LoggerDepot
      */
     private static function traverseKey( string $key )
     {
-        $keyChain = explode( LoggerDepot::$BS, rtrim( $key, LoggerDepot::$BS ));
+        $keyChain = explode( self::$BS, rtrim( $key, self::$BS ));
         $x        = count( $keyChain ) - 1;
         do {
-            $sKey = implode( LoggerDepot::$BS, $keyChain );
-            if( LoggerDepot::isLoggerSet( $sKey )) {
+            $sKey = implode( self::$BS, $keyChain );
+            if( self::isLoggerSet( $sKey )) {
                 return $sKey;
             }
             unset( $keyChain[$x] );
-            $x -= 1;
+            --$x;
         } while( $x >= 0 );
         return false;
     }
