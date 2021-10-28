@@ -2,3 +2,5 @@
 1.1  PHP7 (PHPStan checks/strict mode)
 
 1.2  PHP 7.4
+
+1.4  PHP 8.0

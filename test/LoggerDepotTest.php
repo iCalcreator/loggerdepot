@@ -31,7 +31,6 @@ namespace Kigkonsult\LoggerDepot;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
-use Kigkonsult\LoggerDepot\LoggerDepot;
 
 class TestLogger extends NullLogger
 {

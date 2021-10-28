@@ -101,7 +101,7 @@ class LoggerDepot
      */
      public static function getFallbackLoggerKey() : string
      {
-         return unserialize( self::$fallbackKey  );
+         return self::unMarshallKey( self::$fallbackKey  );
      }
 
     /**
@@ -114,7 +114,7 @@ class LoggerDepot
      * @param null|bool $isFallback
      * @static
      */
-    public static function registerLogger( string $key, $logger, ? bool $isFallback = false ) : void
+    public static function registerLogger( string $key, mixed $logger, ? bool $isFallback = false ) : void
     {
         $mKey = self::marshallKey( $key );
         self::$depot[$mKey] = $logger;
@@ -163,10 +163,22 @@ class LoggerDepot
      */
     public static function getLoggerKeys() : array
     {
-        return array_map(
-            static function( $k ) { return unserialize( $k ); },
-            array_keys( self::$depot )
-        );
+        return array_map( self::$unMarshaller, array_keys( self::$depot ));
+    }
+
+    /**
+     * @var array
+     */
+    private static array $unMarshaller = [ __CLASS__, 'unMarshallKey' ];
+
+    /**
+     * @param string $k
+     * @return string
+     */
+    private static function unMarshallKey( string $k ) : string
+    {
+        static $OPTIONS = [ 'allowed_classes' => false ];
+        return unserialize( $k, $OPTIONS );
     }
 
     /**
@@ -189,7 +201,7 @@ class LoggerDepot
      * @return mixed object|null
      * @static
      */
-    public static function getLogger( string $key )
+    public static function getLogger( string $key ) : mixed
     {
         $mKey = self::marshallKey( $key );
         if( isset( self::$depot[$mKey] )) {
@@ -214,7 +226,7 @@ class LoggerDepot
      * @access private
      * @static
      */
-    private static function traverseKey( string $key )
+    private static function traverseKey( string $key ) : bool | string
     {
         $keyChain = explode( self::$BS, rtrim( $key, self::$BS ));
         $x        = count( $keyChain ) - 1;

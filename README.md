@@ -240,7 +240,7 @@ Composer, in your `composer.json`:
 }
 ```
 
-Version 1.2 supports PHP 7.4, 1.0.4 7.0.
+Version 1.4 supports PHP 8.0, 1.2 7.4, 1.0.4 7.0.
 
 Composer, acquire access
 ``` php
