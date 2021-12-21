@@ -1,0 +1,69 @@
+
+LoggerDepot INSTALL
+
+Version 1.4+ supports PHP 8.0, 1.2 7.4, 1.0.4 7.0.
+
+
+Composer, from the Command Line:
+
+~~~~~~
+composer require kigkonsult/loggerdepot:dev-master
+~~~~~~
+
+
+Composer, in your composer.json:
+
+~~~~~~
+{
+    "require": {
+        "kigkonsult/loggerdepot": "dev-master"
+    }
+}
+~~~~~~
+
+
+Composer, acquire access
+~~~~~~
+<?php
+use Kigkonsult\LoggerDepot\LoggerDepot;
+...
+include 'vendor/autoload.php';
+...
+...
+~~~~~~
+
+
+Otherwise , download and acquire..
+
+~~~~~~
+<?php
+use Kigkonsult\LoggerDepot\LoggerDepot;
+...
+include 'pathToSource/loggerdepot/autoload.php';
+...
+...
+~~~~~~
+
+
+Copyright (c) 2019-2021 Kjell-Inge Gustafsson, kigkonsult, All rights reserved
+Link      https://kigkonsult.se
+Package   LoggerDepot
+License   Subject matter of licence is the software LoggerDepot.
+          The above copyright, link, package and version notices and
+          this licence notice shall be included in all copies or
+          substantial portions of the LoggerDepot.
+
+          LoggerDepot is free software: you can redistribute it and/or modify
+          it under the terms of the GNU Lesser General Public License as published
+          by the Free Software Foundation, either version 3 of the License,
+          or (at your option) any later version.
+
+          LoggerDepot is distributed in the hope that it will be useful,
+          but WITHOUT ANY WARRANTY; without even the implied warranty of
+          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+          GNU Lesser General Public License for more details.
+
+          You should have received a copy of the GNU Lesser General Public License
+          along with LoggerDepot. If not, see <https://www.gnu.org/licenses/>.
+
+This file is part of loggerDepot.

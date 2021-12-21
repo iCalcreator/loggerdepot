@@ -45,22 +45,16 @@ class LoggerDepot
 
     /**
      * @var array   Logger depot
-     * @access private
-     * @static
      */
-    private static array $depot    = [];
+    private static array $depot = [];
 
     /**
      * @var null|string  Key for fallback logger
-     * @access private
-     * @static
      */
-    private static ?string $fallbackKey = null;
+    private static ? string $fallbackKey = null;
 
     /**
      * @var string
-     * @access private
-     * @static
      */
     private static string $BS = '\\';
 
@@ -69,8 +63,6 @@ class LoggerDepot
      *
      * @param string $key
      * @return string
-     * @access private
-     * @static
      */
     private static function marshallKey( string $key ) : string
     {
@@ -82,7 +74,6 @@ class LoggerDepot
      *
      * @param string $key
      * @return bool
-     * @static
      */
     public static function setFallbackLoggerKey( string $key ) : bool
     {
@@ -96,10 +87,9 @@ class LoggerDepot
     /**
      * Return key for (fallback) logger
      *
-     * @return string
-     * @static
+     * @return null|string
      */
-     public static function getFallbackLoggerKey() : string
+     public static function getFallbackLoggerKey() : null|string
      {
          return self::unMarshallKey( self::$fallbackKey  );
      }
@@ -112,7 +102,7 @@ class LoggerDepot
      * @param string $key
      * @param mixed  $logger
      * @param null|bool $isFallback
-     * @static
+     * @return void
      */
     public static function registerLogger( string $key, mixed $logger, ? bool $isFallback = false ) : void
     {
@@ -127,7 +117,7 @@ class LoggerDepot
      * Unregister logger for key
      *
      * @param string $key
-     * @static
+     * @return void
      */
     public static function unregisterLogger( string $key ) : void
     {
@@ -147,7 +137,7 @@ class LoggerDepot
             default :
                 // replace fallback, next found
                 $thisIxs = array_keys( $allKeys, $mKey );
-                $nextIx  = end( $thisIxs ) + 1;
+                $nextIx  = (int) end( $thisIxs ) + 1;
                 $nextKey = $allKeys[$nextIx] ?? $allKeys[0];
                 self::$fallbackKey = $nextKey;
                 break;
@@ -158,8 +148,7 @@ class LoggerDepot
     /**
      * Return Logger keys
      *
-     * @return array
-     * @static
+     * @return string[]
      */
     public static function getLoggerKeys() : array
     {
@@ -167,7 +156,7 @@ class LoggerDepot
     }
 
     /**
-     * @var array
+     * @var string[] callable
      */
     private static array $unMarshaller = [ __CLASS__, 'unMarshallKey' ];
 
@@ -186,7 +175,6 @@ class LoggerDepot
      *
      * @param string $key
      * @return bool
-     * @static
      */
     public static function isLoggerSet( string $key ) : bool
     {
@@ -199,7 +187,6 @@ class LoggerDepot
      *
      * @param string $key
      * @return mixed object|null
-     * @static
      */
     public static function getLogger( string $key ) : mixed
     {
@@ -223,8 +210,6 @@ class LoggerDepot
      *
      * @param string $key
      * @return string|bool   bool false on error
-     * @access private
-     * @static
      */
     private static function traverseKey( string $key ) : bool | string
     {

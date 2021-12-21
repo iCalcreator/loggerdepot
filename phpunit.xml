@@ -46,6 +46,7 @@
             disableCodeCoverageIgnore="true">
         <include>
             <file>./src/LoggerDepot.php</file>
+            <file>./src/PsrLogAggregate.php</file>
         </include>
         <!-- Require the PHP Xdebug (2.7.0 or later) and tokenizer extensions-->
         <!-- Remove or comment after your own choice-->
@@ -62,7 +63,6 @@
     <logging>
         <!-- Remove or comment after your own choice-->
         <!-- All logs will be saved in 'testDocs' folder -->
-
         <!-- junit outputFile="testDocs/junit.xml"/ -->
         <!-- teamcity outputFile="testDocs/teamcity.txt"/ -->
         <!-- testdoxHtml outputFile="testDocs/testdox.html"/ -->

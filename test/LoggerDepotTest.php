@@ -29,9 +29,14 @@ declare( strict_types = 1 );
 namespace Kigkonsult\LoggerDepot;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerTrait;
 use Psr\Log\LogLevel;
 use Psr\Log\NullLogger;
 
+/**
+ * Logger class (#1)
+ */
 class TestLogger extends NullLogger
 {
     /**
@@ -58,10 +63,55 @@ class TestLogger extends NullLogger
         return $this->message;
     }
 }
+
+/**
+ * Logger class (#2)
+ */
+class TestLogger2 implements LoggerInterface
+{
+    /**
+     * The logger file
+     *
+     * @var string
+     */
+    private $loggerFile;
+
+    /**
+     * @param string $loggerFile
+     * @return TestLogger2
+     */
+    public static function factory( string $loggerFile ) : TestLogger2
+    {
+        $instance = new self();
+        $instance->setLoggerFile( $loggerFile );
+        return $instance;
+    }
+
+    /**
+     * Sets a logger file
+     *
+     * @param string $loggerFile
+     * @return TestLogger2
+     */
+    public function setLoggerFile( string $loggerFile ) : TestLogger2
+    {
+        $this->loggerFile = $loggerFile;
+        return $this;
+    }
+
+    use LoggerTrait;
+
+    /**
+     * @inheritDoc
+     */
+    public function log( $level, $message, array $context = array())
+    {
+        file_put_contents( $this->loggerFile, $message . ' with logLevel : ' . $level . PHP_EOL, FILE_APPEND );
+    }
+}
+
 /**
  * class LoggerDepotTest
- *
- * @author      Kjell-Inge Gustafsson <ical@kigkonsult.se>
  */
 class LoggerDepotTest extends TestCase
 {
@@ -77,6 +127,8 @@ class LoggerDepotTest extends TestCase
 
     /**
      * loggerDepoTest1 Provider
+     *
+     * @return array
      */
     public function loggerDepoTest1Provider() : array
     {
@@ -99,9 +151,7 @@ class LoggerDepotTest extends TestCase
      * @dataProvider loggerDepoTest1Provider
      * @param array $loggerCfg
      */
-    public function loggerDepoTest1(
-        array $loggerCfg
-    ) : void
+    public function loggerDepoTest1( array $loggerCfg ) : void
     {
         foreach( $loggerCfg as $k => $l ) {
             $this->assertFalse( LoggerDepot::isLoggerSet( $k ));
@@ -117,6 +167,11 @@ class LoggerDepotTest extends TestCase
             LoggerDepot::registerLogger( $k, $l, true );
             $this->assertEquals( $k, LoggerDepot::getFallbackLoggerKey());
 
+            /* test removal of unknown logger, affecs nothing but the test covers code */
+            $cntLoggers = count( LoggerDepot::getLoggerKeys());
+            LoggerDepot::unregisterLogger( 'unknown' );
+            $this->assertCount( $cntLoggers, LoggerDepot::getLoggerKeys());
+
             LoggerDepot::unregisterLogger( $k );
             $this->assertFalse( LoggerDepot::isLoggerSet( $k ));
             $this->assertNotNull( LoggerDepot::getLogger( $k )); // NullLogger is set
@@ -126,6 +181,8 @@ class LoggerDepotTest extends TestCase
 
     /**
      * loggerDepotTest2 Provider
+     *
+     * @return array
      */
     public function loggerDepotTest2Provider() : array
     {
@@ -170,11 +227,7 @@ class LoggerDepotTest extends TestCase
      * @param string $expected
      * @param string $class
      */
-    public function loggerDepotTest2(
-        array $loggerCfg,
-        string $expected,
-        string $class
-    ) : void
+    public function loggerDepotTest2( array $loggerCfg, string $expected, string $class ) : void
     {
         foreach( $loggerCfg as $k => $l ) {
             LoggerDepot::registerLogger( $k, $l );
@@ -185,6 +238,8 @@ class LoggerDepotTest extends TestCase
 
     /**
      * loggerDepotTest3 Provider
+     *
+     * @return array
      */
     public function loggerDepotTest3Provider() : array
     {
@@ -219,21 +274,16 @@ class LoggerDepotTest extends TestCase
      * @param string $expected2
      * @param string $class
      */
-    public function loggerDepotTest3(
-        array $loggerCfg,
-        string $expected1,
-        string $expected2,
-        string $class
-    ) : void
+    public function loggerDepotTest3( array $loggerCfg, string $expected1, string $expected2, string $class ) : void
     {
-        $k = $k1 = null;
+        $k = $k1 = '';
         foreach( $loggerCfg as $k => $l ) {
             if( empty( $k1 )) {
-                $k1 = $k;
+                $k1 = (string) $k;
             }
             LoggerDepot::registerLogger( $k, $l );
         }
-        $this->asserttrue( LoggerDepot::setFallbackLoggerKey( $k ));
+        $this->asserttrue( LoggerDepot::setFallbackLoggerKey((string) $k ));
         $this->assertEquals( $expected1, LoggerDepot::getLogger( $class )); // last
 
         LoggerDepot::unregisterLogger( $k1 ); // remove first
@@ -245,6 +295,8 @@ class LoggerDepotTest extends TestCase
 
     /**
      * loggerDepotTest4 Provider
+     *
+     * @return array
      */
     public function loggerDepotTest4Provider() : array
     {
@@ -282,7 +334,7 @@ class LoggerDepotTest extends TestCase
     }
 
     /**
-     * Test multiple loggers
+     * Test multiple (single) loggers, aggregated loggers in loggerDepotTest6, below
      *
      * @test
      * @dataProvider loggerDepotTest4Provider
@@ -290,11 +342,7 @@ class LoggerDepotTest extends TestCase
      * @param string $key
      * @param string $expected
      */
-    public function loggerDepotTest4(
-        array  $loggerCfg,
-        string $key,
-        string $expected
-    ) : void
+    public function loggerDepotTest4( array  $loggerCfg, string $key, string $expected ) : void
     {
         foreach( $loggerCfg as $k => $l ) {
             LoggerDepot::registerLogger( $k, $l );
@@ -304,6 +352,8 @@ class LoggerDepotTest extends TestCase
 
     /**
      * loggerDepotTest5 Provider
+     *
+     * @return array
      */
     public function loggerDepotTest5Provider() : array
     {
@@ -352,11 +402,7 @@ class LoggerDepotTest extends TestCase
      * @param string $key
      * @param string $expected
      */
-    public function loggerDepotTest5(
-        array  $loggerCfg,
-        string $key,
-        string $expected
-    ) : void
+    public function loggerDepotTest5( array  $loggerCfg, string $key, string $expected ) : void
     {
         foreach( $loggerCfg as $k => $l ) {
             LoggerDepot::registerLogger( $k, $l );
@@ -364,4 +410,60 @@ class LoggerDepotTest extends TestCase
         $this->assertEquals( $expected, get_class( LoggerDepot::getLogger( $key )));
     }
 
+    /**
+     * Test PsrLogAggregate, aggregated loggers, log to one but affect multiple
+     *
+     * @test
+     */
+    public function loggerDepotTest6() : void
+    {
+        $loggerFile1 = tempnam( sys_get_temp_dir(), 'im1' );
+        $logger1     = TestLogger2::factory( $loggerFile1 );
+        $loggerFile2 = tempnam( sys_get_temp_dir(), 'im2' );
+        $logger2     = TestLogger2::factory( $loggerFile2 );
+
+        $psrLogAggregate = PsrLogAggregate::factory( [ $logger1, $logger2 ] );
+
+        $logArr      = $psrLogAggregate->getLoggers();
+        $this->assertCount(
+            2,
+            $logArr
+        );
+        $this->assertNotSame(
+            $logArr[0],
+            $logArr[1]
+        );
+
+        LoggerDepot::registerLogger( __NAMESPACE__, $psrLogAggregate );
+
+        $testLogger = LoggerDepot::getLogger( __NAMESPACE__ );
+        $logTestMsg = 'This is a %s message (#';
+        foreach(
+            [
+                LogLevel::EMERGENCY,
+                LogLevel::ALERT,
+                LogLevel::CRITICAL,
+                LogLevel::ERROR,
+                LogLevel::WARNING,
+                LogLevel::NOTICE,
+                LogLevel::INFO,
+                LogLevel::DEBUG
+            ]
+            as $logLevel ) {
+            $actMsg = sprintf( $logTestMsg, strtoupper( $logLevel ));
+            $testLogger->{$logLevel}( $actMsg . '1, using method ' . $logLevel . ')' );
+            $testLogger->log( $logLevel, $actMsg . '2, using method log)' );
+        }
+
+//      echo 'loggerFile1 contents : ' . PHP_EOL . file_get_contents( $loggerFile1 ) . PHP_EOL;// test ###
+//      echo 'loggerFile2 contents : ' . PHP_EOL . file_get_contents( $loggerFile2 ) . PHP_EOL;// test ###
+
+        $this->assertFileEquals(
+            $loggerFile1,
+            $loggerFile1
+        );
+
+        unlink( $loggerFile1 );
+        unlink( $loggerFile2 );
+    }
 }

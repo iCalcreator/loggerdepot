@@ -4,3 +4,7 @@
 1.2  PHP 7.4
 
 1.4  PHP 8.0
+
+1.42 Add Psr\Log aggregate class
+     acts as single logger
+     transfer each message to multiple loggers
